@@ -19,6 +19,25 @@ const { describe, it, expect } = exports.lab = Lab.script();
 
 describe('Joi', () => {
 
+    it('Validate rename work', () => {
+        return new Promise((resolve, reject) => {
+            const schema = Joi.object().keys({
+                user: Joi.string().rename('username').required(),
+                age: Joi.number(),
+            });
+            schema.validate({user: 'Dog', age: 18}, (error, value) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
+            });
+        }).then((value) => {
+
+            expect(value).to.object({username: 'Dog', age: 18});
+        })
+    });
+
     it('validates with a callback', () => {
 
         return new Promise((resolve, reject) => {
