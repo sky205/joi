@@ -19,6 +19,54 @@ const { describe, it, expect } = exports.lab = Lab.script();
 
 describe('Joi', () => {
 
+    it('Validate match work', () => {
+        const schema = Joi.object().keys({
+            name: Joi.string().match(['dog', 'cat', 'tiger']),
+        });
+        return new Promise((resolve, reject) => {
+            schema.validate({name: 'dog'}, (error, value) => {
+                if (error) {
+                    reject('name is dog should pass not error');
+                } else {
+                    resolve();
+                }
+            });
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                schema.validate({name: 'joi'}, (error, value) => {
+                    if (error) {
+                        resolve();
+                    } else {
+                        reject('string not match list, should false, but it success');
+                    }
+                })
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                schema.validate({name: 'dog'}, (error, value) => {
+                    if (error) {
+                        reject('string match should success');
+                    } else {
+                        resolve();
+                    }
+                });
+            })
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                const stringSchema = Joi.object().keys({
+                    name: 'dog',
+                });
+                stringSchema.validate({name: 'dog'}, (error, value) => {
+                    if (error) {
+                        reject('string match should success');
+                    } else {
+                        resolve();
+                    }
+                })
+            })
+        })
+    });
+
     it('Validate rename work', () => {
         return new Promise((resolve, reject) => {
             const schema = Joi.object().keys({
